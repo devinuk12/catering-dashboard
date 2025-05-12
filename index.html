@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Catering Trolley Lookup</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    select {
+      padding: 6px;
+      font-size: 16px;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 20px;
+      width: 100%;
+      max-width: 600px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+      width: 40%;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Catering Trolley Data Lookup</h2>
+  <label for="peopleSelect">Select Number of People: </label>
+  <select id="peopleSelect" onchange="showData()"></select>
+
+  <div id="result"></div>
+
+  <script>
+    const data = [
+  {
+    "People": 1,
+    "Coffee Flask": 1,
+    "Hot Water Flask": 1,
+    "Still Water Bottle": 1,
+    "Sparkling Water Bottle": 1,
+    "Sugar Jar": "Mixed Sugar Jar",
+    "Milk Jug": 1,
+    "Coffee Cup": 1,
+    "Hot Water Cup": 1,
+    "Water Glass": 4
+  },
+  {
+    "People": 2,
+    "Coffee Flask": 1,
+    "Hot Water Flask": 1,
+    "Still Water Bottle": 1,
+    "Sparkling Water Bottle": 1,
+    "Sugar Jar": "Mixed Sugar Jar",
+    "Milk Jug": 1,
+    "Coffee Cup": 2,
+    "Hot Water Cup": 2,
+    "Water Glass": 4
+  },
+  {
+    "People": 3,
+    "Coffee Flask": 1,
+    "Hot Water Flask": 1,
+    "Still Water Bottle": 1,
+    "Sparkling Water Bottle": 1,
+    "Sugar Jar": "Mixed Sugar Jar",
+    "Milk Jug": 1,
+    "Coffee Cup": 3,
+    "Hot Water Cup": 3,
+    "Water Glass": 4
+  },
+  {
+    "People": 4,
+    "Coffee Flask": 1,
+    "Hot Water Flask": 1,
+    "Still Water Bottle": 1,
+    "Sparkling Water Bottle": 1,
+    "Sugar Jar": "Mixed Sugar Jar",
+    "Milk Jug": 1,
+    "Coffee Cup": 4,
+    "Hot Water Cup": 4,
+    "Water Glass": 4
+  },
+  {
+    "People": 5,
+    "Coffee Flask": 1,
+    "Hot Water Flask": 1,
+    "Still Water Bottle": 2,
+    "Sparkling Water Bottle": 2,
+    "Sugar Jar": "Mixed Sugar Jar",
+    "Milk Jug": 1,
+    "Coffee Cup": 5,
+    "Hot Water Cup": 5,
+    "Water Glass": 8
+  },
+  {
+    "People": 6,
+    "Coffee Flask": 1,
+    "Hot Water Flask": 1,
+    "Still Water Bottle": 2,
+    "Sparkling Water Bottle": 2,
+    "Sugar Jar": "Mixed Sugar Jar",
+    "Milk Jug": 2,
+    "Coffee Cup": 6,
+    "Hot Water Cup": 6,
+    "Water Glass": 8
+  },
+  {
+    "People": 7,
+    "Coffee Flask": 2,
+    "Hot Water Flask": 2,
+    "Still Water Bottle": 2,
+    "Sparkling Water Bottle": 2,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 2,
+    "Coffee Cup": 7,
+    "Hot Water Cup": 7,
+    "Water Glass": 8
+  },
+  {
+    "People": 8,
+    "Coffee Flask": 2,
+    "Hot Water Flask": 2,
+    "Still Water Bottle": 2,
+    "Sparkling Water Bottle": 2,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 2,
+    "Coffee Cup": 8,
+    "Hot Water Cup": 8,
+    "Water Glass": 8
+  },
+  {
+    "People": 9,
+    "Coffee Flask": 2,
+    "Hot Water Flask": 2,
+    "Still Water Bottle": 3,
+    "Sparkling Water Bottle": 3,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 2,
+    "Coffee Cup": 9,
+    "Hot Water Cup": 9,
+    "Water Glass": 12
+  },
+  {
+    "People": 10,
+    "Coffee Flask": 2,
+    "Hot Water Flask": 2,
+    "Still Water Bottle": 3,
+    "Sparkling Water Bottle": 3,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 2,
+    "Coffee Cup": 10,
+    "Hot Water Cup": 10,
+    "Water Glass": 12
+  },
+  {
+    "People": 11,
+    "Coffee Flask": 2,
+    "Hot Water Flask": 2,
+    "Still Water Bottle": 3,
+    "Sparkling Water Bottle": 3,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 3,
+    "Coffee Cup": 11,
+    "Hot Water Cup": 11,
+    "Water Glass": 12
+  },
+  {
+    "People": 12,
+    "Coffee Flask": 2,
+    "Hot Water Flask": 2,
+    "Still Water Bottle": 3,
+    "Sparkling Water Bottle": 3,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 3,
+    "Coffee Cup": 12,
+    "Hot Water Cup": 12,
+    "Water Glass": 12
+  },
+  {
+    "People": 13,
+    "Coffee Flask": 3,
+    "Hot Water Flask": 3,
+    "Still Water Bottle": 4,
+    "Sparkling Water Bottle": 4,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 3,
+    "Coffee Cup": 13,
+    "Hot Water Cup": 13,
+    "Water Glass": 16
+  },
+  {
+    "People": 14,
+    "Coffee Flask": 3,
+    "Hot Water Flask": 3,
+    "Still Water Bottle": 4,
+    "Sparkling Water Bottle": 4,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 3,
+    "Coffee Cup": 14,
+    "Hot Water Cup": 14,
+    "Water Glass": 16
+  },
+  {
+    "People": 15,
+    "Coffee Flask": 3,
+    "Hot Water Flask": 3,
+    "Still Water Bottle": 4,
+    "Sparkling Water Bottle": 4,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 3,
+    "Coffee Cup": 15,
+    "Hot Water Cup": 15,
+    "Water Glass": 16
+  },
+  {
+    "People": 16,
+    "Coffee Flask": 3,
+    "Hot Water Flask": 3,
+    "Still Water Bottle": 4,
+    "Sparkling Water Bottle": 4,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 4,
+    "Coffee Cup": 16,
+    "Hot Water Cup": 16,
+    "Water Glass": 16
+  },
+  {
+    "People": 17,
+    "Coffee Flask": 3,
+    "Hot Water Flask": 3,
+    "Still Water Bottle": 5,
+    "Sparkling Water Bottle": 5,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 4,
+    "Coffee Cup": 17,
+    "Hot Water Cup": 17,
+    "Water Glass": 20
+  },
+  {
+    "People": 18,
+    "Coffee Flask": 3,
+    "Hot Water Flask": 3,
+    "Still Water Bottle": 5,
+    "Sparkling Water Bottle": 5,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 4,
+    "Coffee Cup": 18,
+    "Hot Water Cup": 18,
+    "Water Glass": 20
+  },
+  {
+    "People": 19,
+    "Coffee Flask": 4,
+    "Hot Water Flask": 4,
+    "Still Water Bottle": 5,
+    "Sparkling Water Bottle": 5,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 4,
+    "Coffee Cup": 19,
+    "Hot Water Cup": 19,
+    "Water Glass": 20
+  },
+  {
+    "People": 20,
+    "Coffee Flask": 4,
+    "Hot Water Flask": 4,
+    "Still Water Bottle": 5,
+    "Sparkling Water Bottle": 5,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 4,
+    "Coffee Cup": 20,
+    "Hot Water Cup": 20,
+    "Water Glass": 20
+  },
+  {
+    "People": 21,
+    "Coffee Flask": 4,
+    "Hot Water Flask": 4,
+    "Still Water Bottle": 6,
+    "Sparkling Water Bottle": 6,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 5,
+    "Coffee Cup": 21,
+    "Hot Water Cup": 21,
+    "Water Glass": 24
+  },
+  {
+    "People": 22,
+    "Coffee Flask": 4,
+    "Hot Water Flask": 4,
+    "Still Water Bottle": 6,
+    "Sparkling Water Bottle": 6,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 5,
+    "Coffee Cup": 22,
+    "Hot Water Cup": 22,
+    "Water Glass": 24
+  },
+  {
+    "People": 23,
+    "Coffee Flask": 4,
+    "Hot Water Flask": 4,
+    "Still Water Bottle": 6,
+    "Sparkling Water Bottle": 6,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 5,
+    "Coffee Cup": 23,
+    "Hot Water Cup": 23,
+    "Water Glass": 24
+  },
+  {
+    "People": 24,
+    "Coffee Flask": 4,
+    "Hot Water Flask": 4,
+    "Still Water Bottle": 6,
+    "Sparkling Water Bottle": 6,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 5,
+    "Coffee Cup": 24,
+    "Hot Water Cup": 24,
+    "Water Glass": 24
+  },
+  {
+    "People": 25,
+    "Coffee Flask": 5,
+    "Hot Water Flask": 5,
+    "Still Water Bottle": 7,
+    "Sparkling Water Bottle": 7,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 5,
+    "Coffee Cup": 25,
+    "Hot Water Cup": 25,
+    "Water Glass": 28
+  },
+  {
+    "People": 26,
+    "Coffee Flask": 5,
+    "Hot Water Flask": 5,
+    "Still Water Bottle": 7,
+    "Sparkling Water Bottle": 7,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 6,
+    "Coffee Cup": 26,
+    "Hot Water Cup": 26,
+    "Water Glass": 28
+  },
+  {
+    "People": 27,
+    "Coffee Flask": 5,
+    "Hot Water Flask": 5,
+    "Still Water Bottle": 7,
+    "Sparkling Water Bottle": 7,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 6,
+    "Coffee Cup": 27,
+    "Hot Water Cup": 27,
+    "Water Glass": 28
+  },
+  {
+    "People": 28,
+    "Coffee Flask": 5,
+    "Hot Water Flask": 5,
+    "Still Water Bottle": 7,
+    "Sparkling Water Bottle": 7,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 6,
+    "Coffee Cup": 28,
+    "Hot Water Cup": 28,
+    "Water Glass": 28
+  },
+  {
+    "People": 29,
+    "Coffee Flask": 5,
+    "Hot Water Flask": 5,
+    "Still Water Bottle": 8,
+    "Sparkling Water Bottle": 8,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 6,
+    "Coffee Cup": 29,
+    "Hot Water Cup": 29,
+    "Water Glass": 32
+  },
+  {
+    "People": 30,
+    "Coffee Flask": 5,
+    "Hot Water Flask": 5,
+    "Still Water Bottle": 8,
+    "Sparkling Water Bottle": 8,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 6,
+    "Coffee Cup": 30,
+    "Hot Water Cup": 30,
+    "Water Glass": 32
+  },
+  {
+    "People": 31,
+    "Coffee Flask": 6,
+    "Hot Water Flask": 6,
+    "Still Water Bottle": 8,
+    "Sparkling Water Bottle": 8,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 7,
+    "Coffee Cup": 31,
+    "Hot Water Cup": 31,
+    "Water Glass": 32
+  },
+  {
+    "People": 32,
+    "Coffee Flask": 6,
+    "Hot Water Flask": 6,
+    "Still Water Bottle": 8,
+    "Sparkling Water Bottle": 8,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 7,
+    "Coffee Cup": 32,
+    "Hot Water Cup": 32,
+    "Water Glass": 32
+  },
+  {
+    "People": 33,
+    "Coffee Flask": 6,
+    "Hot Water Flask": 6,
+    "Still Water Bottle": 9,
+    "Sparkling Water Bottle": 9,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 7,
+    "Coffee Cup": 33,
+    "Hot Water Cup": 33,
+    "Water Glass": 36
+  },
+  {
+    "People": 34,
+    "Coffee Flask": 6,
+    "Hot Water Flask": 6,
+    "Still Water Bottle": 9,
+    "Sparkling Water Bottle": 9,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 7,
+    "Coffee Cup": 34,
+    "Hot Water Cup": 34,
+    "Water Glass": 36
+  },
+  {
+    "People": 35,
+    "Coffee Flask": 6,
+    "Hot Water Flask": 6,
+    "Still Water Bottle": 9,
+    "Sparkling Water Bottle": 9,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 7,
+    "Coffee Cup": 35,
+    "Hot Water Cup": 35,
+    "Water Glass": 36
+  },
+  {
+    "People": 36,
+    "Coffee Flask": 6,
+    "Hot Water Flask": 6,
+    "Still Water Bottle": 9,
+    "Sparkling Water Bottle": 9,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 8,
+    "Coffee Cup": 36,
+    "Hot Water Cup": 36,
+    "Water Glass": 36
+  },
+  {
+    "People": 37,
+    "Coffee Flask": 7,
+    "Hot Water Flask": 7,
+    "Still Water Bottle": 10,
+    "Sparkling Water Bottle": 10,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 8,
+    "Coffee Cup": 37,
+    "Hot Water Cup": 37,
+    "Water Glass": 40
+  },
+  {
+    "People": 38,
+    "Coffee Flask": 7,
+    "Hot Water Flask": 7,
+    "Still Water Bottle": 10,
+    "Sparkling Water Bottle": 10,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 8,
+    "Coffee Cup": 38,
+    "Hot Water Cup": 38,
+    "Water Glass": 40
+  },
+  {
+    "People": 39,
+    "Coffee Flask": 7,
+    "Hot Water Flask": 7,
+    "Still Water Bottle": 10,
+    "Sparkling Water Bottle": 10,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 8,
+    "Coffee Cup": 39,
+    "Hot Water Cup": 39,
+    "Water Glass": 40
+  },
+  {
+    "People": 40,
+    "Coffee Flask": 7,
+    "Hot Water Flask": 7,
+    "Still Water Bottle": 10,
+    "Sparkling Water Bottle": 10,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 8,
+    "Coffee Cup": 40,
+    "Hot Water Cup": 40,
+    "Water Glass": 40
+  },
+  {
+    "People": 41,
+    "Coffee Flask": 7,
+    "Hot Water Flask": 7,
+    "Still Water Bottle": 11,
+    "Sparkling Water Bottle": 11,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 9,
+    "Coffee Cup": 41,
+    "Hot Water Cup": 41,
+    "Water Glass": 44
+  },
+  {
+    "People": 42,
+    "Coffee Flask": 7,
+    "Hot Water Flask": 7,
+    "Still Water Bottle": 11,
+    "Sparkling Water Bottle": 11,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 9,
+    "Coffee Cup": 42,
+    "Hot Water Cup": 42,
+    "Water Glass": 44
+  },
+  {
+    "People": 43,
+    "Coffee Flask": 8,
+    "Hot Water Flask": 8,
+    "Still Water Bottle": 11,
+    "Sparkling Water Bottle": 11,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 9,
+    "Coffee Cup": 43,
+    "Hot Water Cup": 43,
+    "Water Glass": 44
+  },
+  {
+    "People": 44,
+    "Coffee Flask": 8,
+    "Hot Water Flask": 8,
+    "Still Water Bottle": 11,
+    "Sparkling Water Bottle": 11,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 9,
+    "Coffee Cup": 44,
+    "Hot Water Cup": 44,
+    "Water Glass": 44
+  },
+  {
+    "People": 45,
+    "Coffee Flask": 8,
+    "Hot Water Flask": 8,
+    "Still Water Bottle": 12,
+    "Sparkling Water Bottle": 12,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 9,
+    "Coffee Cup": 45,
+    "Hot Water Cup": 45,
+    "Water Glass": 48
+  },
+  {
+    "People": 46,
+    "Coffee Flask": 8,
+    "Hot Water Flask": 8,
+    "Still Water Bottle": 12,
+    "Sparkling Water Bottle": 12,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 10,
+    "Coffee Cup": 46,
+    "Hot Water Cup": 46,
+    "Water Glass": 48
+  },
+  {
+    "People": 47,
+    "Coffee Flask": 8,
+    "Hot Water Flask": 8,
+    "Still Water Bottle": 12,
+    "Sparkling Water Bottle": 12,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 10,
+    "Coffee Cup": 47,
+    "Hot Water Cup": 47,
+    "Water Glass": 48
+  },
+  {
+    "People": 48,
+    "Coffee Flask": 8,
+    "Hot Water Flask": 8,
+    "Still Water Bottle": 12,
+    "Sparkling Water Bottle": 12,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 10,
+    "Coffee Cup": 48,
+    "Hot Water Cup": 48,
+    "Water Glass": 48
+  },
+  {
+    "People": 49,
+    "Coffee Flask": 9,
+    "Hot Water Flask": 9,
+    "Still Water Bottle": 13,
+    "Sparkling Water Bottle": 13,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 10,
+    "Coffee Cup": 49,
+    "Hot Water Cup": 49,
+    "Water Glass": 52
+  },
+  {
+    "People": 50,
+    "Coffee Flask": 9,
+    "Hot Water Flask": 9,
+    "Still Water Bottle": 13,
+    "Sparkling Water Bottle": 13,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 10,
+    "Coffee Cup": 50,
+    "Hot Water Cup": 50,
+    "Water Glass": 52
+  },
+  {
+    "People": 51,
+    "Coffee Flask": 9,
+    "Hot Water Flask": 9,
+    "Still Water Bottle": 13,
+    "Sparkling Water Bottle": 13,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 11,
+    "Coffee Cup": 51,
+    "Hot Water Cup": 51,
+    "Water Glass": 52
+  },
+  {
+    "People": 52,
+    "Coffee Flask": 9,
+    "Hot Water Flask": 9,
+    "Still Water Bottle": 13,
+    "Sparkling Water Bottle": 13,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 11,
+    "Coffee Cup": 52,
+    "Hot Water Cup": 52,
+    "Water Glass": 52
+  },
+  {
+    "People": 53,
+    "Coffee Flask": 9,
+    "Hot Water Flask": 9,
+    "Still Water Bottle": 14,
+    "Sparkling Water Bottle": 14,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 11,
+    "Coffee Cup": 53,
+    "Hot Water Cup": 53,
+    "Water Glass": 56
+  },
+  {
+    "People": 54,
+    "Coffee Flask": 9,
+    "Hot Water Flask": 9,
+    "Still Water Bottle": 14,
+    "Sparkling Water Bottle": 14,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 11,
+    "Coffee Cup": 54,
+    "Hot Water Cup": 54,
+    "Water Glass": 56
+  },
+  {
+    "People": 55,
+    "Coffee Flask": 10,
+    "Hot Water Flask": 10,
+    "Still Water Bottle": 14,
+    "Sparkling Water Bottle": 14,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 11,
+    "Coffee Cup": 55,
+    "Hot Water Cup": 55,
+    "Water Glass": 56
+  },
+  {
+    "People": 56,
+    "Coffee Flask": 10,
+    "Hot Water Flask": 10,
+    "Still Water Bottle": 14,
+    "Sparkling Water Bottle": 14,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 12,
+    "Coffee Cup": 56,
+    "Hot Water Cup": 56,
+    "Water Glass": 56
+  },
+  {
+    "People": 57,
+    "Coffee Flask": 10,
+    "Hot Water Flask": 10,
+    "Still Water Bottle": 15,
+    "Sparkling Water Bottle": 15,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 12,
+    "Coffee Cup": 57,
+    "Hot Water Cup": 57,
+    "Water Glass": 60
+  },
+  {
+    "People": 58,
+    "Coffee Flask": 10,
+    "Hot Water Flask": 10,
+    "Still Water Bottle": 15,
+    "Sparkling Water Bottle": 15,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 12,
+    "Coffee Cup": 58,
+    "Hot Water Cup": 58,
+    "Water Glass": 60
+  },
+  {
+    "People": 59,
+    "Coffee Flask": 10,
+    "Hot Water Flask": 10,
+    "Still Water Bottle": 15,
+    "Sparkling Water Bottle": 15,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 12,
+    "Coffee Cup": 59,
+    "Hot Water Cup": 59,
+    "Water Glass": 60
+  },
+  {
+    "People": 60,
+    "Coffee Flask": 10,
+    "Hot Water Flask": 10,
+    "Still Water Bottle": 15,
+    "Sparkling Water Bottle": 15,
+    "Sugar Jar": "1 Brown,1 White,1 Sweet Jars",
+    "Milk Jug": 12,
+    "Coffee Cup": 60,
+    "Hot Water Cup": 60,
+    "Water Glass": 60
+  }
+];
+
+    const peopleSelect = document.getElementById('peopleSelect');
+    data.forEach(row => {
+      const option = document.createElement('option');
+      option.value = row.People;
+      option.text = row.People;
+      peopleSelect.appendChild(option);
+    });
+
+    function showData() {
+      const people = parseInt(document.getElementById('peopleSelect').value);
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = "";
+
+      const match = data.find(row => row.People === people);
+      if (!match) {
+        resultDiv.innerHTML = "<p>No data found for that number of people.</p>";
+        return;
+      }
+
+      let table = "<table>";
+      for (const key in match) {
+        table += `<tr><th>${key}</th><td>${match[key]}</td></tr>`;
+      }
+      table += "</table>";
+      resultDiv.innerHTML = table;
+    }
+
+    // Show data for the first entry on load
+    window.onload = () => {
+      peopleSelect.selectedIndex = 0;
+      showData();
+    };
+  </script>
+</body>
+</html>
