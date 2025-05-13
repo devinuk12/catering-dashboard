@@ -1,0 +1,407 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Catering Checklist</title>
+  <style>
+    body {
+      font-family: 'Verdana', sans-serif;
+      font-size: 18px;
+      background-color: #f9f9f9;
+      color: #333;
+      padding: 20px;
+    }
+    select {
+      padding: 10px;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    .task-btn {
+      cursor: pointer;
+      padding: 10px 14px;
+      border-radius: 6px;
+      border: 2px solid #888;
+      background: #e0e0e0;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+      transition: all 0.2s ease-in-out;
+      font-size: 18px;
+      min-width: 180px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .task-btn.completed {
+      background-color: #4CAF50;
+      color: white;
+    }
+    input[type='checkbox'] {
+      appearance: none;
+      width: 28px;
+      height: 28px;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      background-color: white;
+      margin-right: 10px;
+      position: relative;
+    }
+    input[type='checkbox']:checked {
+      background-color: orange;
+      border-color: orange;
+    }
+    input[type='checkbox']:checked::after {
+      content: "✓";
+      position: absolute;
+      font-size: 18px;
+      color: white;
+      top: 2px;
+      left: 7px;
+    }
+    .completed {
+      background-color: #d4edda;
+    }
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+    body.dark-mode table, body.dark-mode th, body.dark-mode td {
+      border-color: #555;
+    }
+    body.dark-mode .task-btn {
+      background-color: #333;
+      color: #eee;
+      border-color: #777;
+    }
+    body.dark-mode .task-btn.completed {
+      background-color: #2e7d32;
+    }
+  
+
+
+.button-3d {
+  display: inline-block;
+  padding: 10px 18px;
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(to bottom, #f5f5f5, #dcdcdc);
+  border: 2px solid #aaa;
+  border-radius: 10px;
+  box-shadow: 0 3px #888;
+  transition: all 0.15s ease-in-out;
+  min-width: 160px;
+  text-align: center;
+  color: #000;
+  outline: none;
+}
+.button-3d:hover {
+  background: linear-gradient(to bottom, #eeeeee, #cccccc);
+}
+.button-3d:active {
+  box-shadow: 0 1px #666;
+  transform: translateY(2px);
+}
+
+
+.button-3d:active {
+  box-shadow: 0 2px #666;
+  transform: translateY(2px);
+}
+
+
+@media (max-width: 600px) {
+  #progressChart {
+    display: none !important;
+  }
+}
+
+</style>
+</head>
+<body>
+  <h2>Catering Checklist</h2>
+  <label for="peopleSelect">Select number of people:</label>
+  <select id="peopleSelect"></select>
+
+  <div id="progressChart" style="margin: 0 auto 10px; max-width: 220px;"></div>
+<div id="taskSummary" style="margin-bottom: 20px; font-weight: bold;"></div>
+  <div id="result"></div>
+  <div id="congratsContainer"></div>
+
+  <div style="margin-top: 20px;">
+    <button id="startOverBtn" style="padding: 10px 20px; font-size: 18px;">🔄 Start Over</button>
+    <button id="pdfExportBtn" style="padding: 10px 20px; font-size: 18px;">📄 Export to PDF</button>
+    <button id="toggleCompletedBtn" style="padding: 10px 20px; font-size: 18px;">👀 Hide Completed</button>
+    <button id="manualSnapshotBtn" class="button-3d">📸 Take Snapshot</button>
+  <button id="toggleDarkModeBtn" style="padding: 10px 20px; font-size: 18px;">🌙 Toggle Dark Mode</button>
+  </div>
+
+  <script id="json-data" type="application/json">[{"People":1,"Coffee Flask":1,"Hot Water Flask":1,"Mug":1,"Glasses":4,"Milk Jug":1,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"Mixed Sugar Jar","Tea Spoon":4,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":1,"Napkin Plate":1,"Bowl and Plate":1,"Tent card":1,"Still Water Bottle":1,"Sparkling Water Bottle":1,"Biscuits":4},{"People":2,"Coffee Flask":1,"Hot Water Flask":1,"Mug":2,"Glasses":4,"Milk Jug":1,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"Mixed Sugar Jar","Tea Spoon":4,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":2,"Napkin Plate":1,"Bowl and Plate":1,"Tent card":1,"Still Water Bottle":1,"Sparkling Water Bottle":1,"Biscuits":4},{"People":3,"Coffee Flask":1,"Hot Water Flask":1,"Mug":3,"Glasses":4,"Milk Jug":1,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"Mixed Sugar Jar","Tea Spoon":4,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":3,"Napkin Plate":1,"Bowl and Plate":1,"Tent card":1,"Still Water Bottle":1,"Sparkling Water Bottle":1,"Biscuits":4},{"People":4,"Coffee Flask":1,"Hot Water Flask":1,"Mug":4,"Glasses":4,"Milk Jug":1,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"Mixed Sugar Jar","Tea Spoon":4,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":4,"Napkin Plate":1,"Bowl and Plate":1,"Tent card":1,"Still Water Bottle":1,"Sparkling Water Bottle":1,"Biscuits":4},{"People":5,"Coffee Flask":1,"Hot Water Flask":1,"Mug":5,"Glasses":5,"Milk Jug":1,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"Mixed Sugar Jar","Tea Spoon":5,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":5,"Napkin Plate":1,"Bowl and Plate":1,"Tent card":1,"Still Water Bottle":2,"Sparkling Water Bottle":2,"Biscuits":5},{"People":6,"Coffee Flask":1,"Hot Water Flask":1,"Mug":6,"Glasses":6,"Milk Jug":2,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"Mixed Sugar Jar","Tea Spoon":6,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":6,"Napkin Plate":1,"Bowl and Plate":1,"Tent card":1,"Still Water Bottle":2,"Sparkling Water Bottle":2,"Biscuits":6},{"People":7,"Coffee Flask":2,"Hot Water Flask":2,"Mug":7,"Glasses":7,"Milk Jug":2,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":7,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":7,"Napkin Plate":1,"Bowl and Plate":1,"Tent card":1,"Still Water Bottle":2,"Sparkling Water Bottle":2,"Biscuits":7},{"People":8,"Coffee Flask":2,"Hot Water Flask":2,"Mug":8,"Glasses":8,"Milk Jug":2,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":8,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":8,"Napkin Plate":1,"Bowl and Plate":1,"Tent card":1,"Still Water Bottle":2,"Sparkling Water Bottle":2,"Biscuits":8},{"People":9,"Coffee Flask":2,"Hot Water Flask":2,"Mug":9,"Glasses":9,"Milk Jug":2,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":9,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":9,"Napkin Plate":1,"Bowl and Plate":1,"Tent card":1,"Still Water Bottle":3,"Sparkling Water Bottle":3,"Biscuits":9},{"People":10,"Coffee Flask":2,"Hot Water Flask":2,"Mug":10,"Glasses":10,"Milk Jug":2,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":10,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":10,"Napkin Plate":1,"Bowl and Plate":2,"Tent card":1,"Still Water Bottle":3,"Sparkling Water Bottle":3,"Biscuits":10},{"People":11,"Coffee Flask":2,"Hot Water Flask":2,"Mug":11,"Glasses":11,"Milk Jug":3,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":11,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":11,"Napkin Plate":1,"Bowl and Plate":2,"Tent card":1,"Still Water Bottle":3,"Sparkling Water Bottle":3,"Biscuits":11},{"People":12,"Coffee Flask":2,"Hot Water Flask":2,"Mug":12,"Glasses":12,"Milk Jug":3,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":12,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":12,"Napkin Plate":1,"Bowl and Plate":2,"Tent card":1,"Still Water Bottle":3,"Sparkling Water Bottle":3,"Biscuits":12},{"People":13,"Coffee Flask":3,"Hot Water Flask":3,"Mug":13,"Glasses":13,"Milk Jug":3,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":13,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":13,"Napkin Plate":1,"Bowl and Plate":2,"Tent card":1,"Still Water Bottle":4,"Sparkling Water Bottle":4,"Biscuits":13},{"People":14,"Coffee Flask":3,"Hot Water Flask":3,"Mug":14,"Glasses":14,"Milk Jug":3,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":14,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":14,"Napkin Plate":1,"Bowl and Plate":2,"Tent card":1,"Still Water Bottle":4,"Sparkling Water Bottle":4,"Biscuits":14},{"People":15,"Coffee Flask":3,"Hot Water Flask":3,"Mug":15,"Glasses":15,"Milk Jug":3,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":15,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":15,"Napkin Plate":1,"Bowl and Plate":2,"Tent card":1,"Still Water Bottle":4,"Sparkling Water Bottle":4,"Biscuits":15},{"People":16,"Coffee Flask":3,"Hot Water Flask":3,"Mug":16,"Glasses":16,"Milk Jug":4,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":16,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":16,"Napkin Plate":1,"Bowl and Plate":2,"Tent card":1,"Still Water Bottle":4,"Sparkling Water Bottle":4,"Biscuits":16},{"People":17,"Coffee Flask":3,"Hot Water Flask":3,"Mug":17,"Glasses":17,"Milk Jug":4,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":17,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":17,"Napkin Plate":1,"Bowl and Plate":2,"Tent card":1,"Still Water Bottle":5,"Sparkling Water Bottle":5,"Biscuits":17},{"People":18,"Coffee Flask":3,"Hot Water Flask":3,"Mug":18,"Glasses":18,"Milk Jug":4,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":18,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":18,"Napkin Plate":1,"Bowl and Plate":2,"Tent card":1,"Still Water Bottle":5,"Sparkling Water Bottle":5,"Biscuits":18},{"People":19,"Coffee Flask":4,"Hot Water Flask":4,"Mug":19,"Glasses":19,"Milk Jug":4,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":19,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":19,"Napkin Plate":1,"Bowl and Plate":2,"Tent card":1,"Still Water Bottle":5,"Sparkling Water Bottle":5,"Biscuits":19},{"People":20,"Coffee Flask":4,"Hot Water Flask":4,"Mug":20,"Glasses":20,"Milk Jug":4,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":20,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":20,"Napkin Plate":1,"Bowl and Plate":2,"Tent card":1,"Still Water Bottle":5,"Sparkling Water Bottle":5,"Biscuits":20},{"People":21,"Coffee Flask":4,"Hot Water Flask":4,"Mug":21,"Glasses":21,"Milk Jug":5,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":21,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":21,"Napkin Plate":1,"Bowl and Plate":3,"Tent card":1,"Still Water Bottle":6,"Sparkling Water Bottle":6,"Biscuits":21},{"People":22,"Coffee Flask":4,"Hot Water Flask":4,"Mug":22,"Glasses":22,"Milk Jug":5,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":22,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":22,"Napkin Plate":1,"Bowl and Plate":3,"Tent card":1,"Still Water Bottle":6,"Sparkling Water Bottle":6,"Biscuits":22},{"People":23,"Coffee Flask":4,"Hot Water Flask":4,"Mug":23,"Glasses":23,"Milk Jug":5,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":23,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":23,"Napkin Plate":1,"Bowl and Plate":3,"Tent card":1,"Still Water Bottle":6,"Sparkling Water Bottle":6,"Biscuits":23},{"People":24,"Coffee Flask":4,"Hot Water Flask":4,"Mug":24,"Glasses":24,"Milk Jug":5,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":24,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":24,"Napkin Plate":1,"Bowl and Plate":3,"Tent card":1,"Still Water Bottle":6,"Sparkling Water Bottle":6,"Biscuits":24},{"People":25,"Coffee Flask":5,"Hot Water Flask":5,"Mug":25,"Glasses":25,"Milk Jug":5,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":25,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":25,"Napkin Plate":1,"Bowl and Plate":3,"Tent card":1,"Still Water Bottle":7,"Sparkling Water Bottle":7,"Biscuits":25},{"People":26,"Coffee Flask":5,"Hot Water Flask":5,"Mug":26,"Glasses":26,"Milk Jug":6,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":26,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":26,"Napkin Plate":1,"Bowl and Plate":3,"Tent card":1,"Still Water Bottle":7,"Sparkling Water Bottle":7,"Biscuits":26},{"People":27,"Coffee Flask":5,"Hot Water Flask":5,"Mug":27,"Glasses":27,"Milk Jug":6,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":27,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":27,"Napkin Plate":1,"Bowl and Plate":3,"Tent card":1,"Still Water Bottle":7,"Sparkling Water Bottle":7,"Biscuits":27},{"People":28,"Coffee Flask":5,"Hot Water Flask":5,"Mug":28,"Glasses":28,"Milk Jug":6,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":28,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":28,"Napkin Plate":1,"Bowl and Plate":3,"Tent card":1,"Still Water Bottle":7,"Sparkling Water Bottle":7,"Biscuits":28},{"People":29,"Coffee Flask":5,"Hot Water Flask":5,"Mug":29,"Glasses":29,"Milk Jug":6,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":29,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":29,"Napkin Plate":1,"Bowl and Plate":3,"Tent card":1,"Still Water Bottle":8,"Sparkling Water Bottle":8,"Biscuits":29},{"People":30,"Coffee Flask":5,"Hot Water Flask":5,"Mug":30,"Glasses":30,"Milk Jug":6,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":30,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":30,"Napkin Plate":1,"Bowl and Plate":3,"Tent card":1,"Still Water Bottle":8,"Sparkling Water Bottle":8,"Biscuits":30},{"People":31,"Coffee Flask":6,"Hot Water Flask":6,"Mug":31,"Glasses":31,"Milk Jug":7,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":31,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":31,"Napkin Plate":1,"Bowl and Plate":4,"Tent card":1,"Still Water Bottle":8,"Sparkling Water Bottle":8,"Biscuits":31},{"People":32,"Coffee Flask":6,"Hot Water Flask":6,"Mug":32,"Glasses":32,"Milk Jug":7,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":32,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":32,"Napkin Plate":1,"Bowl and Plate":4,"Tent card":1,"Still Water Bottle":8,"Sparkling Water Bottle":8,"Biscuits":32},{"People":33,"Coffee Flask":6,"Hot Water Flask":6,"Mug":33,"Glasses":33,"Milk Jug":7,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":33,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":33,"Napkin Plate":1,"Bowl and Plate":4,"Tent card":1,"Still Water Bottle":9,"Sparkling Water Bottle":9,"Biscuits":33},{"People":34,"Coffee Flask":6,"Hot Water Flask":6,"Mug":34,"Glasses":34,"Milk Jug":7,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":34,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":34,"Napkin Plate":1,"Bowl and Plate":4,"Tent card":1,"Still Water Bottle":9,"Sparkling Water Bottle":9,"Biscuits":34},{"People":35,"Coffee Flask":6,"Hot Water Flask":6,"Mug":35,"Glasses":35,"Milk Jug":7,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":35,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":35,"Napkin Plate":1,"Bowl and Plate":4,"Tent card":1,"Still Water Bottle":9,"Sparkling Water Bottle":9,"Biscuits":35},{"People":36,"Coffee Flask":6,"Hot Water Flask":6,"Mug":36,"Glasses":36,"Milk Jug":8,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":36,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":36,"Napkin Plate":1,"Bowl and Plate":4,"Tent card":1,"Still Water Bottle":9,"Sparkling Water Bottle":9,"Biscuits":36},{"People":37,"Coffee Flask":7,"Hot Water Flask":7,"Mug":37,"Glasses":37,"Milk Jug":8,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":37,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":37,"Napkin Plate":1,"Bowl and Plate":4,"Tent card":1,"Still Water Bottle":10,"Sparkling Water Bottle":10,"Biscuits":37},{"People":38,"Coffee Flask":7,"Hot Water Flask":7,"Mug":38,"Glasses":38,"Milk Jug":8,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":38,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":38,"Napkin Plate":1,"Bowl and Plate":4,"Tent card":1,"Still Water Bottle":10,"Sparkling Water Bottle":10,"Biscuits":38},{"People":39,"Coffee Flask":7,"Hot Water Flask":7,"Mug":39,"Glasses":39,"Milk Jug":8,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":39,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":39,"Napkin Plate":1,"Bowl and Plate":4,"Tent card":1,"Still Water Bottle":10,"Sparkling Water Bottle":10,"Biscuits":39},{"People":40,"Coffee Flask":7,"Hot Water Flask":7,"Mug":40,"Glasses":40,"Milk Jug":8,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":40,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":40,"Napkin Plate":1,"Bowl and Plate":4,"Tent card":1,"Still Water Bottle":10,"Sparkling Water Bottle":10,"Biscuits":40},{"People":41,"Coffee Flask":7,"Hot Water Flask":7,"Mug":41,"Glasses":41,"Milk Jug":9,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":41,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":41,"Napkin Plate":1,"Bowl and Plate":5,"Tent card":1,"Still Water Bottle":11,"Sparkling Water Bottle":11,"Biscuits":41},{"People":42,"Coffee Flask":7,"Hot Water Flask":7,"Mug":42,"Glasses":42,"Milk Jug":9,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":42,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":42,"Napkin Plate":1,"Bowl and Plate":5,"Tent card":1,"Still Water Bottle":11,"Sparkling Water Bottle":11,"Biscuits":42},{"People":43,"Coffee Flask":8,"Hot Water Flask":8,"Mug":43,"Glasses":43,"Milk Jug":9,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":43,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":43,"Napkin Plate":1,"Bowl and Plate":5,"Tent card":1,"Still Water Bottle":11,"Sparkling Water Bottle":11,"Biscuits":43},{"People":44,"Coffee Flask":8,"Hot Water Flask":8,"Mug":44,"Glasses":44,"Milk Jug":9,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":44,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":44,"Napkin Plate":1,"Bowl and Plate":5,"Tent card":1,"Still Water Bottle":11,"Sparkling Water Bottle":11,"Biscuits":44},{"People":45,"Coffee Flask":8,"Hot Water Flask":8,"Mug":45,"Glasses":45,"Milk Jug":9,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":45,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":45,"Napkin Plate":1,"Bowl and Plate":5,"Tent card":1,"Still Water Bottle":12,"Sparkling Water Bottle":12,"Biscuits":45},{"People":46,"Coffee Flask":8,"Hot Water Flask":8,"Mug":46,"Glasses":46,"Milk Jug":10,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":46,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":46,"Napkin Plate":1,"Bowl and Plate":5,"Tent card":1,"Still Water Bottle":12,"Sparkling Water Bottle":12,"Biscuits":46},{"People":47,"Coffee Flask":8,"Hot Water Flask":8,"Mug":47,"Glasses":47,"Milk Jug":10,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":47,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":47,"Napkin Plate":1,"Bowl and Plate":5,"Tent card":1,"Still Water Bottle":12,"Sparkling Water Bottle":12,"Biscuits":47},{"People":48,"Coffee Flask":8,"Hot Water Flask":8,"Mug":48,"Glasses":48,"Milk Jug":10,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":48,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":48,"Napkin Plate":1,"Bowl and Plate":5,"Tent card":1,"Still Water Bottle":12,"Sparkling Water Bottle":12,"Biscuits":48},{"People":49,"Coffee Flask":9,"Hot Water Flask":9,"Mug":49,"Glasses":49,"Milk Jug":10,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":49,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":49,"Napkin Plate":1,"Bowl and Plate":5,"Tent card":1,"Still Water Bottle":13,"Sparkling Water Bottle":13,"Biscuits":49},{"People":50,"Coffee Flask":9,"Hot Water Flask":9,"Mug":50,"Glasses":50,"Milk Jug":10,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":50,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":50,"Napkin Plate":1,"Bowl and Plate":5,"Tent card":1,"Still Water Bottle":13,"Sparkling Water Bottle":13,"Biscuits":50},{"People":51,"Coffee Flask":9,"Hot Water Flask":9,"Mug":51,"Glasses":51,"Milk Jug":11,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":51,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":51,"Napkin Plate":1,"Bowl and Plate":6,"Tent card":1,"Still Water Bottle":13,"Sparkling Water Bottle":13,"Biscuits":51},{"People":52,"Coffee Flask":9,"Hot Water Flask":9,"Mug":52,"Glasses":52,"Milk Jug":11,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":52,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":52,"Napkin Plate":1,"Bowl and Plate":6,"Tent card":1,"Still Water Bottle":13,"Sparkling Water Bottle":13,"Biscuits":52},{"People":53,"Coffee Flask":9,"Hot Water Flask":9,"Mug":53,"Glasses":53,"Milk Jug":11,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":53,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":53,"Napkin Plate":1,"Bowl and Plate":6,"Tent card":1,"Still Water Bottle":14,"Sparkling Water Bottle":14,"Biscuits":53},{"People":54,"Coffee Flask":9,"Hot Water Flask":9,"Mug":54,"Glasses":54,"Milk Jug":11,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":54,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":54,"Napkin Plate":1,"Bowl and Plate":6,"Tent card":1,"Still Water Bottle":14,"Sparkling Water Bottle":14,"Biscuits":54},{"People":55,"Coffee Flask":10,"Hot Water Flask":10,"Mug":55,"Glasses":55,"Milk Jug":11,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":55,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":55,"Napkin Plate":1,"Bowl and Plate":6,"Tent card":1,"Still Water Bottle":14,"Sparkling Water Bottle":14,"Biscuits":55},{"People":56,"Coffee Flask":10,"Hot Water Flask":10,"Mug":56,"Glasses":56,"Milk Jug":12,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":56,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":56,"Napkin Plate":1,"Bowl and Plate":6,"Tent card":1,"Still Water Bottle":14,"Sparkling Water Bottle":14,"Biscuits":56},{"People":57,"Coffee Flask":10,"Hot Water Flask":10,"Mug":57,"Glasses":57,"Milk Jug":12,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":57,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":57,"Napkin Plate":1,"Bowl and Plate":6,"Tent card":1,"Still Water Bottle":15,"Sparkling Water Bottle":15,"Biscuits":57},{"People":58,"Coffee Flask":10,"Hot Water Flask":10,"Mug":58,"Glasses":58,"Milk Jug":12,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":58,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":58,"Napkin Plate":1,"Bowl and Plate":6,"Tent card":1,"Still Water Bottle":15,"Sparkling Water Bottle":15,"Biscuits":58},{"People":59,"Coffee Flask":10,"Hot Water Flask":10,"Mug":59,"Glasses":59,"Milk Jug":12,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":59,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":59,"Napkin Plate":1,"Bowl and Plate":6,"Tent card":1,"Still Water Bottle":15,"Sparkling Water Bottle":15,"Biscuits":59},{"People":60,"Coffee Flask":10,"Hot Water Flask":10,"Mug":60,"Glasses":60,"Milk Jug":12,"Tea Jar":1,"Teas Tongs":3,"Sugar Jar":"1xBr 1xWh 1xSw","Tea Spoon":60,"Tea Spoon Plate":1,"Tea Spoon Napkin Holder":1,"Napkins":60,"Napkin Plate":1,"Bowl and Plate":6,"Tent card":1,"Still Water Bottle":15,"Sparkling Water Bottle":15,"Biscuits":60}]</script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const data = JSON.parse(document.getElementById("json-data").textContent.trim());
+      const peopleSelect = document.getElementById("peopleSelect");
+      const resultDiv = document.getElementById("result");
+
+      data.forEach(row => {
+        if (row.People) {
+          const option = document.createElement("option");
+          option.value = row.People;
+          option.textContent = row.People + " People";
+          peopleSelect.appendChild(option);
+        }
+      });
+
+      const previous = localStorage.getItem("selectedPeople");
+      if (previous) {
+        peopleSelect.value = previous;
+      }
+      peopleSelect.dispatchEvent(new Event("change"));
+
+      peopleSelect.addEventListener("change", () => {
+        const selected = parseInt(peopleSelect.value);
+        localStorage.setItem("selectedPeople", selected);
+        const match = data.find(row => Number(row.People) === selected);
+        resultDiv.innerHTML = "";
+        document.getElementById("congratsContainer").innerHTML = "";
+        document.getElementById("taskSummary").textContent = "";
+
+        if (!match) {
+          resultDiv.innerHTML = "<p style='color:red;'>No matching setup found.</p>";
+          return;
+        }
+
+        const instruction = document.createElement("p");
+        instruction.textContent = "Miss. Khushi, please check correct number of items and none of the items are missed before you complete each task.";
+        instruction.style.background = "#e3f2fd";
+        instruction.style.color = "#0d47a1";
+        instruction.style.padding = "12px 16px";
+        instruction.style.borderRadius = "6px";
+        instruction.style.marginBottom = "12px";
+        resultDiv.appendChild(instruction);
+
+        const table = document.createElement("table");
+
+        for (let key in match) {
+          if (key === "People") continue;
+
+          const row = document.createElement("tr");
+
+          const cb = document.createElement("input");
+          cb.type = "checkbox";
+          cb.disabled = true;
+          const tdCheckbox = document.createElement("td");
+          tdCheckbox.appendChild(cb);
+          row.appendChild(tdCheckbox);
+
+          const btn = document.createElement("button");
+          btn.textContent = key;
+          btn.className = "task-btn";
+          const th = document.createElement("th");
+          th.appendChild(btn);
+          row.appendChild(th);
+
+          const td = document.createElement("td");
+          let val = match[key];
+          if (key === "Sugar Jar") {
+            console.log("Sugar Jar value:", val);
+            if (!val || val.trim() === "") {
+              val = "— (no items needed)";
+            }
+            td.textContent = val;
+          } else if (typeof val === "number" && val > 10) {
+            const sets = Math.floor(val / 10);
+            const rem = val % 10;
+            const strong = document.createElement("strong");
+            strong.textContent = val;
+            td.appendChild(strong);
+            const chunk = document.createElement("span");
+            chunk.textContent = " → " + "🔟 ".repeat(sets) + (rem ? "then " + rem : "");
+            chunk.style.marginLeft = "10px";
+            chunk.style.color = "#1e6091";
+            td.appendChild(chunk);
+          } else {
+            td.textContent = val;
+          }
+          row.appendChild(td);
+
+          btn.addEventListener("click", () => {
+            const clickSound = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
+            clickSound.play();
+            cb.checked = !cb.checked;
+            btn.classList.toggle("completed");
+            row.classList.toggle("completed");
+            saveProgress();
+            checkAllCompleted();
+            updateSummary();
+          });
+
+          table.appendChild(row);
+        }
+
+        resultDiv.appendChild(table);
+        restoreProgress();
+      });
+
+      function updateSummary() {
+    const total = document.querySelectorAll("input[type=\'checkbox\']").length;
+    const checked = document.querySelectorAll("input[type=\'checkbox\']:checked").length;
+    const summary = document.getElementById("taskSummary");
+    updateProgressChart(checked, total);
+        if (summary) {
+          summary.textContent = `🧮 Tasks Completed: ${checked} / ${total}`;
+        }
+      }
+
+      function checkAllCompleted() {
+        const checkboxes = document.querySelectorAll("input[type='checkbox']");
+        const allChecked = [...checkboxes].every(cb => cb.checked);
+        const container = document.getElementById("congratsContainer");
+        container.innerHTML = "";
+        if (allChecked) {
+          const msg = document.createElement("div");
+          msg.innerHTML = "<h2 style='color:#2e7d32; animation: popIn 0.6s ease-out;'>🎉 Congratulations Miss Khushi! 🎉<br>You have completed this task!</h2>";
+          msg.style.backgroundColor = "#e8f5e9";
+          msg.style.padding = "20px";
+          msg.style.textAlign = "center";
+          container.appendChild(msg);
+          html2canvas(document.body).then(canvas => {
+            const link = document.createElement("a");
+            link.href = canvas.toDataURL("image/png");
+            link.download = "task_completion_snapshot.png";
+            link.textContent = "📸 Save snapshot";
+            link.style.display = "block";
+            link.style.textAlign = "center";
+            container.appendChild(link);
+            setTimeout(() => msg.scrollIntoView({ behavior: "smooth" }), 300);
+          });
+        }
+      }
+
+      function saveProgress() {
+        const states = [...document.querySelectorAll("input[type='checkbox']")].map(cb => cb.checked);
+        localStorage.setItem("taskProgress", JSON.stringify(states));
+      }
+
+      function restoreProgress() {
+        const saved = JSON.parse(localStorage.getItem("taskProgress") || "[]");
+        const boxes = document.querySelectorAll("input[type='checkbox']");
+        saved.forEach((checked, i) => {
+          if (boxes[i]) {
+            boxes[i].checked = checked;
+            const row = boxes[i].closest("tr");
+            const btn = row.querySelector("button");
+            if (checked) {
+              row.classList.add("completed");
+              btn.classList.add("completed");
+            }
+          }
+        });
+        checkAllCompleted();
+        updateSummary();
+      }
+
+      document.getElementById("startOverBtn").addEventListener("click", () => {
+    new Audio("https://actions.google.com/sounds/v1/cartoon/page_turn.ogg").play();
+        localStorage.removeItem("taskProgress");
+        localStorage.removeItem("selectedPeople");
+        location.reload();
+      });
+
+      document.getElementById("pdfExportBtn").addEventListener("click", () => {
+    new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg").play();
+        html2canvas(document.body).then(canvas => {
+          const imgData = canvas.toDataURL("image/png");
+          const pdf = new jspdf.jsPDF("p", "pt", "a4");
+          const imgProps = pdf.getImageProperties(imgData);
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+          pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+          pdf.save("catering_checklist.pdf");
+          alert("✅ PDF downloaded! Now you can attach it to an email.");
+        });
+      });
+
+      const toggleBtn = document.getElementById("toggleCompletedBtn");
+      toggleBtn.addEventListener("click", () => {
+        const completedRows = document.querySelectorAll("tr.completed");
+        const hiding = toggleBtn.dataset.state !== "hidden";
+        completedRows.forEach(row => {
+          row.style.display = hiding ? "none" : "";
+        });
+        toggleBtn.textContent = hiding ? "🔁 Unhide Completed" : "👀 Hide Completed";
+        toggleBtn.dataset.state = hiding ? "hidden" : "visible";
+      });
+
+      
+  document.getElementById("manualSnapshotBtn").addEventListener("click", () => {
+    new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg").play();
+    html2canvas(document.body).then(canvas => {
+      const imgData = canvas.toDataURL("image/png");
+      const img = new Image();
+      img.src = imgData;
+      img.style.display = "block";
+      img.style.margin = "20px auto";
+      img.style.maxWidth = "100%";
+
+      const resultDiv = document.getElementById("result");
+      const wrapper = document.createElement("div");
+      wrapper.appendChild(img);
+      const msg = document.createElement("p");
+      msg.textContent = "📸 Tap and hold the image to save it to your Photos.";
+      msg.style.textAlign = "center";
+      msg.style.fontSize = "16px";
+      wrapper.appendChild(msg);
+      resultDiv.prepend(wrapper);
+    });
+  });
+
+  document.getElementById("toggleDarkModeBtn").addEventListener("click", () => {
+    new Audio("https://actions.google.com/sounds/v1/foley/cloth_swipe.ogg").play();
+        document.body.classList.toggle("dark-mode");
+      });
+    });
+  </script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let chart;
+function updateProgressChart(checked, total) {
+  const ctxContainer = document.getElementById("progressChart");
+  ctxContainer.innerHTML = '<canvas id="progressCanvas" height="40"></canvas>';
+  const ctx = document.getElementById("progressCanvas").getContext("2d");
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Completed', 'Remaining'],
+      datasets: [{
+        data: [checked, total - checked],
+        backgroundColor: ['#4CAF50', '#ccc'],
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      cutout: '60%',
+      plugins: {
+        legend: { display: true },
+        tooltip: { enabled: true }
+      }
+    }
+  });
+}
+</script>
+
+</body>
+</html>
